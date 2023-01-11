@@ -1,30 +1,38 @@
 #!/usr/bin/python3
 import sys
-import io
 
-#input = io.TextIOWrapper(sys.stdin.buffer, encoding='utf-8')
-#with open(input, "r", encoding="utf-8") as file:
- #   for line in file:
-  #      print(line)
 
-#input = io.TextIOWrapper(sys.stdin , encoding='utf-8')
+def print_status():
+    '''
+        Printing the status of the request
+    '''
+    counter = 0
+    size = 0
+    file_size = 0
+    status_codes = {"200": 0, "301": 0, "400": 0, "401": 0,
+                    "403": 0, "404": 0, "405": 0, "500": 0}
 
-dictstatus = {}
-totalsize = 0
-totalcount = 0
-for line in sys.stdin:
-    split = line.split()
-    status = split[-2]
-    totalsize += int(split[-1])
-    if status in dictstatus.keys():
-        dictstatus[status] += 1
-    else:
-        dictstatus[status] = 1
-    totalcount += 1
-    if totalcount == 10:
-        sortme = sorted(dictstatus.keys())
-        print("File size:", totalsize)
-        for keys in sortme:
-            print("{}: {}".format(keys, dictstatus[keys]))
-        totalcount = 0
-        continue
+    for l in sys.stdin:
+        line = l.split()
+        try:
+            size += int(line[-1])
+            code = line[-2]
+            status_codes[code] += 1
+        except:
+            continue
+        if counter == 9:
+            print("File size: {}".format(size))
+            for key, val in sorted(status_codes.items()):
+                if (val != 0):
+                    print("{}: {}".format(key, val))
+            counter = 0
+        counter += 1
+    if counter < 9:
+        print("File size: {}".format(size))
+        for key, val in sorted(status_codes.items()):
+            if (val != 0):
+                print("{}: {}".format(key, val))
+
+
+if __name__ == "__main__":
+    print_status()
