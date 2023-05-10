@@ -1,8 +1,10 @@
 #!/usr/bin/node
-if (process.argv.length === 2) {
-  console.log('No argument');
-} else if (process.argv.length === 3) {
-  console.log('Argument found');
-} else {
-  console.log('Arguments found');
-}
+// A script that display the status code of a GET request
+
+const args = process.argv;
+let request = require('request');
+request(args[2], function (error, response, body) {
+  if (error) {
+    console.log('error:', error); // Print the error if one occurred
+  } else console.log('code:', response && response.statusCode);
+});
